@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You — Happy Valentine's Day</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Dancing+Script:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --deep: #0a0506;
+      --burgundy: #6b1d2a;
+      --wine: #8c2f3e;
+      --rose: #c4727e;
+      --blush: #e8a0a8;
+      --gold: #d4a853;
+      --gold-light: #e8c97a;
+      --cream: #f5ece3;
+      --warm-white: #faf6f0;
+      --petal: #d4727e;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--burgundy) var(--deep);
+    }
+
+    body {
+      background: var(--deep);
+      color: var(--cream);
+      font-family: 'Lora', serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── Splash intro (music trigger) ─── */
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      cursor: pointer;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    .splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-heart {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 2.5rem;
+      animation: heartbeat 1.4s ease-in-out infinite;
+    }
+
+    .splash-heart svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--wine);
+      filter: drop-shadow(0 0 30px rgba(140,47,62,0.6));
+    }
+
+    .splash-text {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--gold-light);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 40px rgba(212,168,83,0.3);
+    }
+
+    .splash-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--rose);
+      letter-spacing: 0.15em;
+      opacity: 0.7;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    /* ─── Music toggle ─── */
+    .music-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9998;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,168,83,0.25);
+      background: rgba(10,5,6,0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .music-toggle.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .music-toggle:hover {
+      border-color: var(--gold);
+      background: rgba(107,29,42,0.3);
+      transform: scale(1.08);
+    }
+
+    .music-toggle svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--gold-light);
+      transition: fill 0.3s ease;
+    }
+
+    .music-toggle.paused svg {
+      fill: var(--rose);
+    }
+
+    /* ─── Sound bars animation ─── */
+    .sound-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2.5px;
+      height: 18px;
+    }
+
+    .sound-bars .bar {
+      width: 3px;
+      background: var(--gold-light);
+      border-radius: 1.5px;
+      animation: soundBar 1.2s ease-in-out infinite;
+    }
+
+    .sound-bars .bar:nth-child(1) { height: 40%; animation-delay: 0s; }
+    .sound-bars .bar:nth-child(2) { height: 70%; animation-delay: 0.15s; }
+    .sound-bars .bar:nth-child(3) { height: 50%; animation-delay: 0.3s; }
+    .sound-bars .bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+
+    .music-toggle.paused .sound-bars .bar {
+      animation: none;
+      height: 3px !important;
+      background: var(--rose);
+    }
+
+    @keyframes soundBar {
+      0%, 100% { height: 20%; }
+      50% { height: 90%; }
+    }
+
+    /* ─── Song info ─── */
+    .song-info {
+      position: fixed;
+      bottom: 2rem;
+      right: 5.5rem;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(10,5,6,0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212,168,83,0.15);
+      border-radius: 24px;
+      padding: 0.5rem 1.2rem;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .song-info.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .song-info .note {
+      font-size: 0.85rem;
+    }
+
+    .song-info .song-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--blush);
+      white-space: nowrap;
+    }
+
+    /* ─── Ambient background ─── */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(107,29,42,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(140,47,62,0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(212,168,83,0.06) 0%, transparent 60%);
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── Petals canvas ─── */
+    #petals-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ─── Sections ─── */
+    section {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 4rem 2rem;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-content {
+      opacity: 0;
+      animation: fadeRise 2s ease-out 0.5s forwards;
+    }
+
+    .hero .date-label {
+      font-family: 'Lora', serif;
+      font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeRise 1.5s ease-out 0.8s forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 600;
+      color: var(--warm-white);
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 80px rgba(212,168,83,0.2);
+    }
+
+    .hero h1 .highlight {
+      color: var(--gold-light);
+      display: inline-block;
+      animation: glow 4s ease-in-out infinite alternate;
+    }
+
+    .hero .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--blush);
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeRise 1.5s ease-out 1.5s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      opacity: 0;
+      animation: fadeRise 1.5s ease-out 2.5s forwards;
+    }
+
+    .scroll-hint span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--rose);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--rose), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .divider.visible { opacity: 1; }
+
+    .divider-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    .divider-heart {
+      color: var(--gold);
+      font-size: 0.8rem;
+    }
+
+    /* ─── Poem section ─── */
+    .poem-section {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 50%, rgba(107,29,42,0.08) 0%, transparent 70%);
+    }
+
+    .poem-container {
+      max-width: 580px;
+      text-align: center;
+    }
+
+    .poem-label {
+      font-family: 'Lora', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1.2s ease;
+    }
+
+    .poem-label.visible { opacity: 1; transform: translateY(0); }
+
+    .poem-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 2;
+      color: var(--cream);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1s ease;
+    }
+
+    .poem-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .poem-line .em {
+      color: var(--blush);
+      font-weight: 400;
+    }
+
+    /* ─── Love letter ─── */
+    .letter-section {
+      min-height: 100vh;
+      perspective: 1200px;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.6s ease;
+    }
+
+    .envelope-wrapper:hover { transform: scale(1.02); }
+
+    .envelope {
+      width: clamp(300px, 50vw, 460px);
+      background: linear-gradient(145deg, #f5e6d3, #e8d5bf);
+      border-radius: 4px;
+      padding: 2.5rem 2rem;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.4),
+        0 2px 8px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      position: relative;
+      transform-style: preserve-3d;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .envelope::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(145deg, #ecdcc6, #e0ccb4);
+      clip-path: polygon(0 0, 50% 70%, 100% 0);
+      border-radius: 4px 4px 0 0;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2;
+    }
+
+    .envelope.opened::before {
+      clip-path: polygon(0 0, 50% -60%, 100% 0);
+    }
+
+    .envelope-seal {
+      position: absolute;
+      top: 28%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, var(--wine), var(--burgundy));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      transition: all 0.8s ease;
+    }
+
+    .envelope.opened .envelope-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
+
+    .envelope-seal svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--gold-light);
+    }
+
+    .envelope-prompt {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      color: var(--burgundy);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      opacity: 0.7;
+      transition: opacity 0.6s ease;
+    }
+
+    .envelope.opened .envelope-prompt { opacity: 0; }
+
+    .letter {
+      position: absolute;
+      top: 10%;
+      left: 5%;
+      right: 5%;
+      background: linear-gradient(to bottom, #faf6f0, #f5ece3);
+      padding: 2.5rem 2rem;
+      border-radius: 2px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(0);
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+      z-index: 1;
+    }
+
+    .envelope.opened .letter {
+      opacity: 1;
+      transform: translateY(-110%);
+    }
+
+    .letter-date {
+      font-family: 'Lora', serif;
+      font-size: 0.7rem;
+      color: var(--wine);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .letter-greeting {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--burgundy);
+      margin-bottom: 1rem;
+    }
+
+    .letter-body {
+      font-family: 'Lora', serif;
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: #4a3035;
+    }
+
+    .letter-body p { margin-bottom: 0.8rem; }
+
+    .letter-closing {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      color: var(--burgundy);
+      margin-top: 1.5rem;
+      text-align: right;
+    }
+
+    .letter-instruction {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--rose);
+      margin-top: 1.5rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeRise 1s ease-out 0.5s forwards;
+    }
+
+    /* ─── Memories / Gallery ─── */
+    .memories-section {
+      min-height: 100vh;
+      padding: 6rem 2rem;
+    }
+
+    .memories-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--gold-light);
+      text-align: center;
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1s ease;
+    }
+
+    .memories-title.visible { opacity: 1; transform: translateY(0); }
+
+    .memories-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 4rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1s ease 0.2s;
+    }
+
+    .memories-sub.visible { opacity: 1; transform: translateY(0); }
+
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .memory-card {
+      position: relative;
+      aspect-ratio: 3/4;
+      border-radius: 4px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px) rotate(var(--rot, 0deg));
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .memory-card.visible {
+      opacity: 1;
+      transform: translateY(0) rotate(var(--rot, 0deg));
+    }
+
+    .memory-card:hover {
+      transform: translateY(-8px) rotate(0deg) scale(1.03);
+      z-index: 5;
+    }
+
+    .memory-card-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .memory-card:nth-child(1) .memory-card-inner {
+      background: linear-gradient(135deg, #2a1015, #4a1525);
+    }
+    .memory-card:nth-child(2) .memory-card-inner {
+      background: linear-gradient(135deg, #1a1520, #2a1530);
+    }
+    .memory-card:nth-child(3) .memory-card-inner {
+      background: linear-gradient(135deg, #1a0f10, #3a1520);
+    }
+    .memory-card:nth-child(4) .memory-card-inner {
+      background: linear-gradient(135deg, #15101a, #251525);
+    }
+
+    .memory-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .memory-card h3 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      color: var(--gold-light);
+      margin-bottom: 0.8rem;
+    }
+
+    .memory-card p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--blush);
+      opacity: 0.8;
+    }
+
+    .memory-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(212,168,83,0.1);
+      border-radius: 4px;
+      pointer-events: none;
+      transition: border-color 0.4s ease;
+    }
+
+    .memory-card:hover::after {
+      border-color: rgba(212,168,83,0.3);
+    }
+
+    /* ─── Countdown / Promise ─── */
+    .promise-section {
+      min-height: 80vh;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 50% 50% at 50% 50%, rgba(212,168,83,0.04) 0%, transparent 70%);
+    }
+
+    .promise-label {
+      font-family: 'Lora', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1s ease;
+    }
+
+    .promise-label.visible { opacity: 1; transform: translateY(0); }
+
+    .promise-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 300;
+      line-height: 1.8;
+      max-width: 600px;
+      color: var(--cream);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1.2s ease 0.2s;
+    }
+
+    .promise-text.visible { opacity: 1; transform: translateY(0); }
+
+    .promise-text .gold { color: var(--gold-light); }
+
+    .heart-beat {
+      margin-top: 3rem;
+      opacity: 0;
+      transition: opacity 1s ease 0.6s;
+    }
+
+    .heart-beat.visible { opacity: 1; }
+
+    .heart-beat svg {
+      width: 40px;
+      height: 40px;
+      fill: var(--wine);
+      animation: heartbeat 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(140,47,62,0.5));
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(212,168,83,0.08);
+    }
+
+    .footer p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--rose);
+      opacity: 0.5;
+    }
+
+    /* ─── Animations ─── */
+    @keyframes fadeRise {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 20px rgba(212,168,83,0.2); }
+      100% { text-shadow: 0 0 40px rgba(212,168,83,0.4), 0 0 80px rgba(212,168,83,0.1); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.15); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33% { transform: translateY(-8px) rotate(2deg); }
+      66% { transform: translateY(4px) rotate(-1deg); }
+    }
+
+    /* ─── Sparkle cursor trail ─── */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 6px var(--gold), 0 0 12px rgba(212,168,83,0.3);
+      animation: sparkleFade 0.8s ease-out forwards;
+    }
+
+    @keyframes sparkleFade {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0) translateY(-20px); }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 640px) {
+      section { padding: 3rem 1.5rem; }
+      .envelope { width: 90vw; padding: 2rem 1.5rem; }
+      .letter { padding: 1.5rem 1.2rem; }
+      .memories-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ SPLASH INTRO ═══ -->
+  <div class="splash" id="splash">
+    <div class="splash-heart">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+    <p class="splash-text">Gửi cô gái của anh - Võ Khánh Huyền</p>
+    <p class="splash-sub">Chạm vào bất cứ đâu để bắt đầu hành trình yêu thương của chúng ta</p>
+  </div>
+
+  <!-- ═══ MUSIC ═══ -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="beautiful-in-white.mp3" type="audio/mpeg">
+  </audio>
+
+  <button class="music-toggle" id="music-toggle" title="Toggle music">
+    <div class="sound-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </button>
+
+  <div class="song-info" id="song-info">
+    <span class="note">♪</span>
+    <span class="song-title">Beautiful in White — Shane Filan</span>
+  </div>
+
+  <div class="ambient"></div>
+  <div class="grain"></div>
+  <canvas id="petals-canvas"></canvas>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="date-label">February 14, 2026</p>
+      <h1>Happy <span class="highlight">Valentine's</span><br>Day</h1>
+      <p class="subtitle">Một điều nhỏ bé thôi, chỉ dành riêng cho em</p>
+    </div>
+    <div class="scroll-hint">
+      <span>Kéo xuống nha:></span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="divider" data-reveal>
+    <div class="divider-line"></div>
+    <div class="divider-heart">♥</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ═══ POEM ═══ -->
+  <section class="poem-section">
+    <div class="poem-container">
+      <p class="poem-label" data-reveal>Gửi em</p>
+      <p class="poem-line" data-reveal>Trong một thế giới nơi mọi khoảnh khắc đều vụt qua thật nhanh,</p>
+      <p class="poem-line" data-reveal>Em chính là <span class="em">mãi mãi của anh</span>.</p>
+      <p class="poem-line" data-reveal>&nbsp;</p>
+      <p class="poem-line" data-reveal>Mỗi nhịp tim của anh đều khẽ viết nên tên em,</p>
+      <p class="poem-line" data-reveal>Mỗi hơi thở là một ngọn lửa dịu dàng <span class="em">mang tên em</span>.</p>
+      <p class="poem-line" data-reveal>&nbsp;</p>
+      <p class="poem-line" data-reveal>Em là hơi ấm ngọt ngào giữa những ngày đông lạnh giá của anh,</p>
+      <p class="poem-line" data-reveal>Em là câu chuyện mà anh yêu thương nhất <span class="em">muốn ôm trọn trong tim mình</span>.</p>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="divider" data-reveal>
+    <div class="divider-line"></div>
+    <div class="divider-heart">♥</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ═══ LOVE LETTER ═══ -->
+  <section class="letter-section">
+    <p class="letter-instruction">Chạm khẽ vào phong thư để mở ra yêu thương của chúng ta</p>
+    <div class="envelope-wrapper">
+      <div class="envelope" id="envelope">
+        <div class="envelope-seal">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+        <p class="envelope-prompt">Một phong thư dành tặng em…</p>
+        <div class="letter">
+          <p class="letter-date">Valentine's Day, 2026</p>
+          <p class="letter-greeting">Người thương yêu nhất của anh,</p>
+          <div class="letter-body">
+            <p>Nếu anh có thể cất giữ cảm xúc của mình mỗi khi nhìn thấy em mỉm cười, anh đã nắm trong tay điều quý giá nhất trên đời.</p>
+            <p>Em khiến những ngày bình thường của anh trở nên diệu kỳ. Cách em cười, cách em quan tâm, và chỉ cần em ở bên anh thôi — tất cả đều là điều tuyệt vời nhất.</p>
+            <p>Hôm nay không chỉ là về những đóa hồng hay những viên sô-cô-la. Mà là để anh nói với em điều anh luôn giữ trong tim mỗi ngày: em là người anh yêu thương nhất, là nơi bình yên nhất của anh, và là hành trình tuyệt vời nhất đời anh.</p>
+          </div>
+          <p class="letter-closing">Mãi mãi thuộc về em - TVKH ♥</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MEMORIES ═══ -->
+  <section class="memories-section">
+    <h2 class="memories-title" data-reveal>Những điều khiến anh yêu em</h2>
+    <p class="memories-sub" data-reveal>Một vài trong vô vàn lý do anh yêu em</p>
+    <div class="memories-grid">
+      <div class="memory-card" data-reveal style="--rot: -2deg;">
+        <div class="memory-card-inner">
+          <div class="memory-icon">✦</div>
+          <h3>Nụ cười và tiếng cười của em</h3>
+          <p>Thanh âm ấy có thể biến bất kỳ ngày u tối nào của anh trở nên rực rỡ như nắng vàng</p>
+        </div>
+      </div>
+      <div class="memory-card" data-reveal style="--rot: 1.5deg; transition-delay: 0.15s;">
+        <div class="memory-card-inner">
+          <div class="memory-icon">☽</div>
+          <h3>Những cuộc trò chuyện đêm khuya của chúng ta</h3>
+          <p>Khi cả thế giới đã chìm vào giấc ngủ, chỉ còn lại hai chúng ta bên nhau</p>
+        </div>
+      </div>
+      <div class="memory-card" data-reveal style="--rot: -1deg; transition-delay: 0.3s;">
+        <div class="memory-card-inner">
+          <div class="memory-icon">❋</div>
+          <h3>Sự dịu dàng và lòng tốt của em</h3>
+          <p>Cách em dịu dàng nâng niu và giữ cho thế giới này luôn tròn đầy yêu thương</p>
+        </div>
+      </div>
+      <div class="memory-card" data-reveal style="--rot: 2deg; transition-delay: 0.45s;">
+        <div class="memory-card-inner">
+          <div class="memory-icon">∞</div>
+          <h3>Mọi thứ</h3>
+          <p>Đơn giản là tất cả những gì thuộc về em</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <div class="divider" data-reveal>
+    <div class="divider-line"></div>
+    <div class="divider-heart">♥</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ═══ PROMISE ═══ -->
+  <section class="promise-section">
+    <p class="promise-label" data-reveal>Một lời hứa</p>
+    <p class="promise-text" data-reveal>
+      Hôm nay và mọi ngày, anh chọn <span class="gold">em</span>.<br>
+      Không chỉ vì em là ai,<br>
+      mà vì em khiến anh trở thành người nào<br>
+      khi anh ở bên <span class="gold">em</span>.
+    </p>
+    <div class="heart-beat" data-reveal>
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Anh Thương Em — Happy Valentine's Day ♥</p>
+  </footer>
+
+  <script>
+    /* ═══════════════════════════════════════
+       Falling Rose Petals (Canvas)
+       ═══════════════════════════════════════ */
+    (() => {
+      const canvas = document.getElementById('petals-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const petals = [];
+      const PETAL_COUNT = 35;
+      const colors = ['#c4727e', '#d4727e', '#e8a0a8', '#b85a68', '#d4a853'];
+
+      class Petal {
+        constructor() { this.reset(true); }
+
+        reset(init) {
+          this.x = Math.random() * W;
+          this.y = init ? Math.random() * H * -1 : -20;
+          this.size = Math.random() * 8 + 4;
+          this.speedY = Math.random() * 0.8 + 0.3;
+          this.speedX = Math.random() * 0.6 - 0.3;
+          this.rotation = Math.random() * Math.PI * 2;
+          this.rotSpeed = (Math.random() - 0.5) * 0.02;
+          this.opacity = Math.random() * 0.3 + 0.15;
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.wobble = Math.random() * Math.PI * 2;
+          this.wobbleSpeed = Math.random() * 0.02 + 0.01;
+        }
+
+        update() {
+          this.y += this.speedY;
+          this.wobble += this.wobbleSpeed;
+          this.x += this.speedX + Math.sin(this.wobble) * 0.3;
+          this.rotation += this.rotSpeed;
+          if (this.y > H + 20) this.reset(false);
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.rotation);
+          ctx.globalAlpha = this.opacity;
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          // Petal shape
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(
+            this.size / 2, -this.size,
+            this.size, -this.size / 2,
+            0, this.size
+          );
+          ctx.bezierCurveTo(
+            -this.size, -this.size / 2,
+            -this.size / 2, -this.size,
+            0, 0
+          );
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      for (let i = 0; i < PETAL_COUNT; i++) petals.push(new Petal());
+
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+        petals.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    /* ═══════════════════════════════════════
+       Scroll reveal
+       ═══════════════════════════════════════ */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ═══════════════════════════════════════
+       Envelope open
+       ═══════════════════════════════════════ */
+    const envelope = document.getElementById('envelope');
+    envelope.addEventListener('click', () => {
+      envelope.classList.toggle('opened');
+    });
+
+    /* ═══════════════════════════════════════
+       Sparkle cursor trail
+       ═══════════════════════════════════════ */
+    let sparkleThrottle = 0;
+    document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - sparkleThrottle < 80) return;
+      sparkleThrottle = now;
+
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = (e.clientX - 2) + 'px';
+      sparkle.style.top = (e.clientY - 2) + 'px';
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 800);
+    });
+
+    /* ═══════════════════════════════════════
+       Parallax ambient glow on scroll
+       ═══════════════════════════════════════ */
+    const ambient = document.querySelector('.ambient');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      const progress = scrolled / maxScroll;
+      ambient.style.opacity = 0.8 + progress * 0.2;
+    }, { passive: true });
+
+    /* ═══════════════════════════════════════
+       Splash intro & Music
+       ═══════════════════════════════════════ */
+    const splash = document.getElementById('splash');
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+    const songInfo = document.getElementById('song-info');
+    let musicPlaying = false;
+
+    // Prevent scrolling while splash is visible
+    document.body.style.overflow = 'hidden';
+
+    splash.addEventListener('click', () => {
+      splash.classList.add('hidden');
+      document.body.style.overflow = '';
+
+      // Start music
+      bgMusic.volume = 0;
+      bgMusic.play().then(() => {
+        musicPlaying = true;
+        // Fade in volume
+        let vol = 0;
+        const fadeIn = setInterval(() => {
+          vol += 0.02;
+          if (vol >= 0.6) { vol = 0.6; clearInterval(fadeIn); }
+          bgMusic.volume = vol;
+        }, 50);
+
+        // Show music toggle after a moment
+        setTimeout(() => {
+          musicToggle.classList.add('show');
+        }, 1500);
+
+        // Flash song info briefly
+        setTimeout(() => {
+          songInfo.classList.add('show');
+        }, 2000);
+        setTimeout(() => {
+          songInfo.classList.remove('show');
+        }, 6000);
+      }).catch(() => {
+        // If autoplay blocked, show toggle anyway
+        musicToggle.classList.add('show');
+        musicToggle.classList.add('paused');
+      });
+    });
+
+    musicToggle.addEventListener('click', () => {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicPlaying = false;
+        musicToggle.classList.add('paused');
+      } else {
+        bgMusic.play();
+        musicPlaying = true;
+        musicToggle.classList.remove('paused');
+        // Flash song info
+        songInfo.classList.add('show');
+        setTimeout(() => songInfo.classList.remove('show'), 3000);
+      }
+    });
+
+    // Show song info on hover
+    musicToggle.addEventListener('mouseenter', () => {
+      if (musicPlaying) songInfo.classList.add('show');
+    });
+    musicToggle.addEventListener('mouseleave', () => {
+      songInfo.classList.remove('show');
+    });
+  </script>
+
+</body>
+</html>
